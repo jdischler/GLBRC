@@ -14,14 +14,19 @@
  */
 
 Ext.Loader.setConfig({
-    enabled: true
+    enabled: true,
+		paths: {
+			GeoExt: "http://geoext.github.com/geoext2/src/GeoExt",
+			Ext: "http://cdn.sencha.io/ext-4.1.1-gpl/src"
+		}
 });
 
 Ext.application({
     stores: [
         'store1',
         'landCoverTypes',
-        'selectionModification'
+        'selectionModification',
+        'selectionTool'
     ],
     views: [
         'InfoToolbar',

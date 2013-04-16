@@ -26,12 +26,10 @@ Ext.define('MyApp.view.InfoToolbar', {
                 padding: 10,
                 type: 'hbox'
             },
-            items: [
-                {
-                    xtype: 'label',
-                    html: '<pre>Scale: 1:25,000    View Area: 2347 ha   Selected Area: 500 ha</pre>'
-                }
-            ]
+            items: [{
+								xtype: 'label',
+								html: '<pre>Scale: 1:25,000    View Area: 2347 ha   Selected Area: 500 ha</pre>'
+						}]
         });
 
         me.callParent(arguments);

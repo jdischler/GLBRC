@@ -28,59 +28,53 @@ Ext.define('MyApp.view.TransformationTools', {
         var me = this;
 
         Ext.applyIf(me, {
-            items: [
-                {
-                    xtype: 'panel',
-                    bodyPadding: 10,
-                    title: 'New Land Cover',
-                    items: [
-                        {
-                            xtype: 'checkboxgroup',
-                            width: 400,
-                            columns: 1,
-                            vertical: true,
-                            items: [
-                                {
-                                    xtype: 'checkboxfield',
-                                    boxLabel: 'Corn / Soy'
-                                },
-                                {
-                                    xtype: 'checkboxfield',
-                                    boxLabel: 'Switchgrass'
-                                },
-                                {
-                                    xtype: 'checkboxfield',
-                                    boxLabel: 'Miscanthus'
-                                }
-                            ]
-                        }
-                    ],
-                    dockedItems: [
-                        {
-                            xtype: 'toolbar',
-                            dock: 'bottom',
-                            items: [
-                                {
-                                    xtype: 'button',
-                                    text: 'Apply'
-                                },
-                                {
-                                    xtype: 'button',
-                                    text: 'Revert'
-                                },
-                                {
-                                    xtype: 'button',
-                                    text: 'Save'
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    xtype: 'panel',
-                    title: 'Options'
-                }
-            ]
+            items: [{
+								xtype: 'panel',
+								bodyPadding: 10,
+								title: 'New Land Cover',
+								items: [{
+										xtype: 'checkboxgroup',
+										width: 400,
+										columns: 1,
+										vertical: true,
+										items: [{
+												xtype: 'checkboxfield',
+												boxLabel: 'Corn / Soy'
+										},
+										{
+												xtype: 'checkboxfield',
+												boxLabel: 'Switchgrass'
+										},
+										{
+												xtype: 'checkboxfield',
+												boxLabel: 'Miscanthus'
+										}]
+								}],
+								dockedItems: [{
+										xtype: 'toolbar',
+										dock: 'bottom',
+										items: [{
+												xtype: 'button',
+												scale: 'medium',
+												text: 'Apply'
+										},
+										{
+												xtype: 'button',
+												scale: 'medium',
+												text: 'Revert'
+										},
+										{
+												xtype: 'button',
+												icon: 'app/images/save_icon.png',
+												scale: 'medium',
+												text: 'Save'
+										}]
+								}]
+						},
+						{
+								xtype: 'panel',
+								title: 'Options'
+						}]
         });
 
         me.callParent(arguments);

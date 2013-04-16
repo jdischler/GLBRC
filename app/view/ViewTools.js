@@ -29,69 +29,63 @@ Ext.define('MyApp.view.ViewTools', {
         var me = this;
 
         Ext.applyIf(me, {
-            items: [
-                {
-                    xtype: 'panel',
-                    autoRender: true,
-                    padding: 10,
-                    title: 'Visible Layers',
-                    tabConfig: {
-                        xtype: 'tab',
-                        minWidth: 100
-                    },
-                    items: [
-                        {
-                            xtype: 'checkboxgroup',
-                            height: 131,
-                            autoScroll: true,
-                            columns: 1,
-                            vertical: true,
-                            items: [
-                                {
-                                    xtype: 'checkboxfield',
-                                    boxLabel: 'Aerial Photo'
-                                },
-                                {
-                                    xtype: 'checkboxfield',
-                                    boxLabel: 'Land Cover'
-                                },
-                                {
-                                    xtype: 'checkboxfield',
-                                    boxLabel: 'Selected Area'
-                                },
-                                {
-                                    xtype: 'checkboxfield',
-                                    boxLabel: 'Water Features'
-                                },
-                                {
-                                    xtype: 'checkboxfield',
-                                    boxLabel: 'Urban'
-                                },
-                                {
-                                    xtype: 'checkboxfield',
-                                    boxLabel: 'Farmland'
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    xtype: 'panel',
-                    title: 'Properties',
-                    tabConfig: {
-                        xtype: 'tab',
-                        minWidth: 90
-                    }
-                },
-                {
-                    xtype: 'panel',
-                    title: 'Keys',
-                    tabConfig: {
-                        xtype: 'tab',
-                        minWidth: 75
-                    }
-                }
-            ]
+            items: [{
+								xtype: 'panel',
+								autoRender: true,
+								padding: 10,
+								title: 'Visible Layers',
+								tabConfig: {
+										xtype: 'tab',
+										minWidth: 100
+								},
+								items: [{
+										xtype: 'checkboxgroup',
+										height: 131,
+										autoScroll: true,
+										columns: 1,
+										vertical: true,
+										items: [{
+												xtype: 'checkboxfield',
+												boxLabel: 'Aerial Photo'
+										},
+										{
+												xtype: 'checkboxfield',
+												boxLabel: 'Land Cover'
+										},
+										{
+												xtype: 'checkboxfield',
+												boxLabel: 'Selected Area'
+										},
+										{
+												xtype: 'checkboxfield',
+												boxLabel: 'Water Features'
+										},
+										{
+												xtype: 'checkboxfield',
+												boxLabel: 'Urban'
+										},
+										{
+												xtype: 'checkboxfield',
+												boxLabel: 'Farmland'
+										}]
+								}]
+						},
+						{
+								xtype: 'panel',
+								title: 'Properties',
+								tabConfig: {
+										xtype: 'tab',
+										minWidth: 90
+								}
+						},
+						{
+								xtype: 'panel',
+								title: 'Keys',
+								tabConfig: {
+										xtype: 'tab',
+										minWidth: 75
+								}
+						}]
         });
 
         me.callParent(arguments);
