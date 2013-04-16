@@ -150,7 +150,8 @@ Ext.define('MyApp.view.MainViewport', {
 				opacity: 0.5,
 				isBaseLayer: false,
 				transitionEffect: 'resize',
-				buffer: bufferSize
+				buffer: bufferSize,
+				visibility: false
 			});
 		var wmsRoads = new OpenLayers.Layer.WMS("Roads", 
 			"http://" + baseUrl + ":" + port + path,
@@ -165,7 +166,8 @@ Ext.define('MyApp.view.MainViewport', {
 				isBaseLayer: false,
 				opacity: 0.5,
 				transitionEffect: 'resize',
-				buffer: bufferSize
+				buffer: bufferSize,
+				visibility: false
 			});
 		var wmsRivers = new OpenLayers.Layer.WMS("Rivers", 
 			"http://" + baseUrl + ":" + port + path,
@@ -180,7 +182,8 @@ Ext.define('MyApp.view.MainViewport', {
 				isBaseLayer: false,
 				opacity: 0.3,
 				transitionEffect: 'resize',
-				buffer: bufferSize
+				buffer: bufferSize,
+				visibility: false
 			});
 		var wmsLand = new OpenLayers.Layer.WMS("Public Land", 
 			"http://" + baseUrl + ":" + port + path,
@@ -194,12 +197,13 @@ Ext.define('MyApp.view.MainViewport', {
 				opacity: 0.3,
 				isBaseLayer: false,
 				transitionEffect: 'resize',
-				buffer: bufferSize
+				buffer: bufferSize,
+				visibility: false
 			});
-/*		var wmsSlope = new OpenLayers.Layer.WMS("slope", 
-			"http://" + baseUrl + ":" + port + path,
+		var wmsSlope = new OpenLayers.Layer.WMS("Slope", 
+			"http://" + baseUrl + ":" + port + "/geoserver/DSS-Raster/wms",
 			{
-				layers: 'AfriDSS:slope',
+				layers: 'DSS-Raster:Slope',
 				format: imgFormat,
 				tilesOrigin : map.maxExtent.left + ',' + map.maxExtent.bottom
 			},
@@ -210,11 +214,10 @@ Ext.define('MyApp.view.MainViewport', {
 				opacity: 0.5,
 				transitionEffect: 'resize',
 				buffer: bufferSize,
-				visibility: false,
 				yx : {
 					projectionType : true
 				}
-			});*/
+			});
 		var wmsDEM = new OpenLayers.Layer.WMS("DEM", 
 			"http://" + baseUrl + ":" + port + "/geoserver/DSS-Raster/wms",
 			{
@@ -225,8 +228,7 @@ Ext.define('MyApp.view.MainViewport', {
 			{
 				buffer: bufferSize,
 				displayOutsideMaxExtent: true,
-				isBaseLayer: false,
-				opacity: 0.75,
+				isBaseLayer: true,
 				transitionEffect: 'resize',
 				buffer: bufferSize,
 				yx : {
@@ -251,7 +253,7 @@ Ext.define('MyApp.view.MainViewport', {
 				}
 			});
 		
-		map.addLayers([wmsCDL,wmsDEM/*,wmsSlope*/,wmsDane,wmsWatersheds,wmsRivers,wmsRoads,wmsLand]);
+		map.addLayers([wmsCDL,wmsDEM,wmsSlope,wmsDane,wmsWatersheds,wmsRivers,wmsRoads,wmsLand]);
 	},
 	
 	//--------------------------------------------------------------------------
