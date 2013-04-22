@@ -4,8 +4,12 @@ var globalMap;
 var bufferSize = 2; // how many non-visible tiles on either side of visible area to cache?
 var imgFormat = 'image/png';
 var baseUrl = 'pgis.glbrc.org';
-var path = "/geoserver/AfriDSSV/wms";
+var baseUrl1 = 'pgis1.wei.wisc.edu';
+var baseUrl2 = 'pgis2.wei.wisc.edu';
+var baseUrl3 = 'pgis3.wei.wisc.edu';
+var path = "/geoserver/DSS-Vector/wms";
 var port = '8080';
+var resizeMethod = null; // "resize";
 
 //------------------------------------------------------------------------------
 Ext.define('MyApp.view.MainViewport', {
@@ -23,7 +27,11 @@ Ext.define('MyApp.view.MainViewport', {
 		'MyApp.view.EvaluationTools',
 		'MyApp.view.GraphTools',
 		'GeoExt.panel.Map',
-		'MyApp.view.LayerPanel'
+		'MyApp.view.LayerPanel',
+		'MyApp.view.ScenarioTools',
+		'MyApp.view.GlobalScenarioTools',
+		'MyApp.view.QueryPanelTool',
+		'MyApp.view.ReportTools'
 	],
 	
 	//minHeight: 400,
@@ -54,18 +62,20 @@ Ext.define('MyApp.view.MainViewport', {
 		globalMap = new OpenLayers.Map('map', options)
 		var map = globalMap;
 
-		this.addMapLayers(map, baseUrl, port, path);
-		this.addMapControls(map);		
 		this.doApplyIf(me, map);
-		map.zoomTo(2);
 		
 //		map.zoomToExtent(bounds.scale(0.1));
 		me.callParent(arguments);
+		this.addMapLayers(map, baseUrl, port, path);
+		this.addMapControls(map);		
+		map.zoomTo(2);
 	},
     
 	//--------------------------------------------------------------------------
 	addMapControls: function(map) {
 		
+		var layerBrowser = Ext.getCmp('mapLayerPanel');
+
 		map.addControl(new OpenLayers.Control.Navigation({
 			documentDrag: true, 
 			dragPanOptions: {
@@ -84,9 +94,9 @@ Ext.define('MyApp.view.MainViewport', {
 		
 		var layerSwitcher =new OpenLayers.Control.LayerSwitcher(); 
 		map.addControl(layerSwitcher);
-		layerSwitcher.maximizeControl();
+	//	layerSwitcher.maximizeControl();
 		
-		map.addControl(new OpenLayers.Control.ScaleLine({maxWidth: 200,         					
+		var scaleLine = new OpenLayers.Control.ScaleLine({maxWidth: 200,         					
 			lineSymbolizer: {
 				strokeColor: "#bbb",
 				strokeWidth: 1,
@@ -99,8 +109,10 @@ Ext.define('MyApp.view.MainViewport', {
 				labelOutlineColor: "black",
 				labelOutlineWidth: 4
 			}
-		}));
-		map.addControl(new OpenLayers.Control.Graticule({
+		}); 
+		map.addControl(scaleLine);
+		
+		var lonlatGrid = new OpenLayers.Control.Graticule({
 			displayInLayerSwitcher: true, 
 			visible: false, 
 			targetSize: 500,
@@ -117,91 +129,127 @@ Ext.define('MyApp.view.MainViewport', {
 				labelOutlineColor: "#222",
 				labelOutlineWidth: 4
 			}
-		}));
+		})
+		map.addControl(lonlatGrid);
+		lonlatGrid.draw();
+		lonlatGrid.gratLayer.name = 'Lon/Lat Grid';
+		layerBrowser.addLayer(lonlatGrid.gratLayer, 'Tools','app/images/tool.png',
+				'Activate the longitude/latitude grid overlay');
 	},
-	
+				
 	//--------------------------------------------------------------------------
 	addMapLayers: function(map, baseUrl, port, path) {
 		
+		var layerBrowser = Ext.getCmp('mapLayerPanel');
+		
+		//----------------
 		var wmsDane = new OpenLayers.Layer.WMS("Dane County", 
-			"http://" + baseUrl + ":" + port + path,
+			["http://" + baseUrl + ":" + port + path,
+			"http://" + baseUrl1 + ":" + port + path,
+			"http://" + baseUrl2 + ":" + port + path,
+			"http://" + baseUrl3 + ":" + port + path],
 			{
-				layers: 'AfriDSSV:dane_county',
+				layers: 'DSS-Vector:dane_county',
 				transparent: true,
 				format: imgFormat
 			},
 			{ 
-				displayOutsideMapExtent: true,
+				displayOutsideMapExtent: false,
 				opacity: 0.5,
 				isBaseLayer: false,
-				transitionEffect: 'resize',
+				transitionEffect: resizeMethod,
 				buffer: bufferSize,
 				visibility: false
 			});
+		
+		//----------------
 		var wmsWatersheds = new OpenLayers.Layer.WMS("Watersheds", 
-			"http://" + baseUrl + ":" + port + path,
+			["http://" + baseUrl + ":" + port + path,
+			"http://" + baseUrl1 + ":" + port + path,
+			"http://" + baseUrl2 + ":" + port + path,
+			"http://" + baseUrl3 + ":" + port + path],
 			{
-				layers: 'AfriDSSV:watersheds',
+				layers: 'DSS-Vector:watersheds',
 				transparent: true,
 				format: imgFormat
 			},
 			{ 
-				displayOutsideMapExtent: true,
+				displayOutsideMapExtent: false,
 				opacity: 0.5,
 				isBaseLayer: false,
-				transitionEffect: 'resize',
+				transitionEffect: resizeMethod,
 				buffer: bufferSize,
 				visibility: false
 			});
+		
+		//----------------
 		var wmsRoads = new OpenLayers.Layer.WMS("Roads", 
-			"http://" + baseUrl + ":" + port + path,
+			["http://" + baseUrl + ":" + port + path,
+			"http://" + baseUrl1 + ":" + port + path,
+			"http://" + baseUrl2 + ":" + port + path,
+			"http://" + baseUrl3 + ":" + port + path],
 			{ 
-				layers: 'AfriDSSV:roads',  
+				layers: 'DSS-Vector:roads',  
 				transparent: "true",
 				format: imgFormat  
 			},
 			{ 
-				displayOutsideMapExtent: true,
+				displayOutsideMapExtent: false,
 				opacity: 1,
 				isBaseLayer: false,
 				opacity: 0.5,
-				transitionEffect: 'resize',
+				transitionEffect: resizeMethod,
 				buffer: bufferSize,
 				visibility: false
 			});
+		
+		//----------------
 		var wmsRivers = new OpenLayers.Layer.WMS("Rivers", 
-			"http://" + baseUrl + ":" + port + path,
+			["http://" + baseUrl + ":" + port + path,
+			"http://" + baseUrl1 + ":" + port + path,
+			"http://" + baseUrl2 + ":" + port + path,
+			"http://" + baseUrl3 + ":" + port + path],
 			{ 
-				layers: 'AfriDSSV:rivers',  
+				layers: 'DSS-Vector:rivers',  
 				transparent: "true",
 				format: imgFormat  
 			},
 			{ 
-				displayOutsideMapExtent: true,
+				displayOutsideMapExtent: false,
 				opacity: 1,
 				isBaseLayer: false,
 				opacity: 0.3,
-				transitionEffect: 'resize',
+				transitionEffect: resizeMethod,
 				buffer: bufferSize,
 				visibility: false
 			});
+		
+		//----------------
 		var wmsLand = new OpenLayers.Layer.WMS("Public Land", 
-			"http://" + baseUrl + ":" + port + path,
+			["http://" + baseUrl + ":" + port + path,
+			"http://" + baseUrl1 + ":" + port + path,
+			"http://" + baseUrl2 + ":" + port + path,
+			"http://" + baseUrl3 + ":" + port + path],
 			{ 
-				layers: 'AfriDSSV:public_land',  
+				layers: 'DSS-Vector:public_land',  
 				transparent: "true",
 				format: imgFormat 
 			},
 			{ 
-				displayOutsideMapExtent: true,
+				displayOutsideMapExtent: false,
 				opacity: 0.3,
 				isBaseLayer: false,
-				transitionEffect: 'resize',
+				transitionEffect: resizeMethod,
 				buffer: bufferSize,
 				visibility: false
 			});
+		
+		//----------------
 		var wmsSlope = new OpenLayers.Layer.WMS("Slope", 
-			"http://" + baseUrl + ":" + port + "/geoserver/DSS-Raster/wms",
+			["http://" + baseUrl + ":" + port + "/geoserver/DSS-Raster/wms",
+			"http://" + baseUrl1 + ":" + port + "/geoserver/DSS-Raster/wms",
+			"http://" + baseUrl2 + ":" + port + "/geoserver/DSS-Raster/wms",
+			"http://" + baseUrl3 + ":" + port + "/geoserver/DSS-Raster/wms"],
 			{
 				layers: 'DSS-Raster:Slope',
 				format: imgFormat,
@@ -209,17 +257,23 @@ Ext.define('MyApp.view.MainViewport', {
 			},
 			{
 				buffer: bufferSize,
-				displayOutsideMaxExtent: true,
+				displayOutsideMaxExtent: false,
 				isBaseLayer: false,
 				opacity: 0.5,
-				transitionEffect: 'resize',
+				transitionEffect: resizeMethod,
 				buffer: bufferSize,
+				visibility: false,
 				yx : {
 					projectionType : true
 				}
 			});
-		var wmsDEM = new OpenLayers.Layer.WMS("DEM", 
-			"http://" + baseUrl + ":" + port + "/geoserver/DSS-Raster/wms",
+
+		//----------------
+		var wmsDEM = new OpenLayers.Layer.WMS("Digital Elevation", 
+			["http://" + baseUrl + ":" + port + "/geoserver/DSS-Raster/wms",
+			"http://" + baseUrl1 + ":" + port + "/geoserver/DSS-Raster/wms",
+			"http://" + baseUrl2 + ":" + port + "/geoserver/DSS-Raster/wms",
+			"http://" + baseUrl3 + ":" + port + "/geoserver/DSS-Raster/wms"],
 			{
 				layers: 'DSS-Raster:DEM',
 				format: imgFormat,
@@ -227,24 +281,7 @@ Ext.define('MyApp.view.MainViewport', {
 			},
 			{
 				buffer: bufferSize,
-				displayOutsideMaxExtent: true,
-				isBaseLayer: true,
-				transitionEffect: 'resize',
-				buffer: bufferSize,
-				yx : {
-					projectionType : true
-				}
-			});
-		var wmsCDL = new OpenLayers.Layer.WMS("CDL", 
-			"http://" + baseUrl + ":" + port + "/geoserver/DSS-Raster/wms",
-			{
-				layers: 'DSS-Raster:CDL',
-				format: imgFormat,
-				tilesOrigin : map.maxExtent.left + ',' + map.maxExtent.bottom
-			},
-			{
-				buffer: bufferSize,
-				displayOutsideMaxExtent: true,
+				displayOutsideMaxExtent: false,
 				isBaseLayer: true,
 				transitionEffect: 'resize',
 				buffer: bufferSize,
@@ -253,6 +290,46 @@ Ext.define('MyApp.view.MainViewport', {
 				}
 			});
 		
+		//----------------
+		var wmsCDL = new OpenLayers.Layer.WMS("CDL", 
+			["http://" + baseUrl + ":" + port + "/geoserver/DSS-Raster/wms",
+			"http://" + baseUrl1 + ":" + port + "/geoserver/DSS-Raster/wms",
+			"http://" + baseUrl2 + ":" + port + "/geoserver/DSS-Raster/wms",
+			"http://" + baseUrl3 + ":" + port + "/geoserver/DSS-Raster/wms"],
+			{
+				layers: 'DSS-Raster:CDL',
+				format: imgFormat,
+				tilesOrigin : map.maxExtent.left + ',' + map.maxExtent.bottom
+			},
+			{
+				buffer: bufferSize,
+				displayOutsideMaxExtent: false,
+				isBaseLayer: true,
+				transitionEffect: 'resize',
+				buffer: bufferSize,
+				yx : {
+					projectionType : true
+				}
+			});
+		
+		//----------------
+		layerBrowser.addLayer(wmsCDL, 'Land Coverage','app/images/raster.png',
+				'Activate a raster overlay of land usage');
+		layerBrowser.addLayer(wmsDEM, 'Geophysical','app/images/raster.png',
+				'Activate a raster overlay of elevation');
+		layerBrowser.addLayer(wmsSlope, 'Geophysical','app/images/raster.png',
+				'Activate a raster overlay of calculated terrain slope');
+		layerBrowser.addLayer(wmsRivers, 'Geophysical','app/images/vector.png',
+				'Activate a vector overlay of all rivers');
+		layerBrowser.addLayer(wmsRoads, 'Geophysical','app/images/vector.png',
+				'Activate a vector overlay of all roads');
+		layerBrowser.addLayer(wmsWatersheds, 'Geophysical','app/images/vector.png',
+				'Activate a vector overlay of the watersheds');
+		layerBrowser.addLayer(wmsLand, 'Geophysical','app/images/vector.png',
+				'Activate a vector overlay of publicly owned lands');
+		layerBrowser.addLayer(wmsDane, 'Geophysical','app/images/vector.png',
+				'Activate a vector overlay of Dane County');
+	
 		map.addLayers([wmsCDL,wmsDEM,wmsSlope,wmsDane,wmsWatersheds,wmsRivers,wmsRoads,wmsLand]);
 	},
 	
@@ -271,7 +348,8 @@ Ext.define('MyApp.view.MainViewport', {
 				items: [{
 					xtype: 'gx_mappanel',
 					title: 'Landscape Viewer',
-					titleAlign: 'center',
+					icon: 'app/images/globe_icon.png',
+//					titleAlign: 'center',
 					map: map,
 					border: 0,
 					center: '12,51',
@@ -284,13 +362,21 @@ Ext.define('MyApp.view.MainViewport', {
 					layout: {
 						type: 'absolute'
 					},
-					title: 'GLBRC Decision Support Tool v0.1',
-					titleAlign: 'center',
+//					title: 'GLBRC Decision Support Tool v0.1',
+//					titleAlign: 'center',
+					header: false,
 					dock: 'top',
 					collapsible: true,
 					animCollapse: false,
-					collapsed: true,
-					height: 90
+					collapsed: false,
+					height: 64,
+					bodyStyle: 'background-color:rgb(220,230,240)',
+					items: [{
+						xtype: 'image',
+						x: 0,
+						y: 0,
+						src: 'app/images/dss_logo.png'
+					}]
 				},
 				{
 					xtype: 'queryEditor',
@@ -318,9 +404,10 @@ Ext.define('MyApp.view.MainViewport', {
 					frameHeader: false,
 					manageHeight: false,
 					title: '',
+
 					listeners: {
 						collapse: function(p, eOpts) { 
-							p.setTitle('Scenario Tools');
+							p.setTitle('Query / Scenario Tools');
 						},
 						beforeexpand: function(p, animated, eOpts) {
 							p.setTitle('');
@@ -328,6 +415,21 @@ Ext.define('MyApp.view.MainViewport', {
 					},
 					items: [{
 						xtype: 'layerPanel'
+					},
+					{
+						xtype: 'querypanel'
+					},
+					{
+						xtype: 'scenariotools',
+						collapsed: true
+					},
+					{
+						xtype: 'transformationtools',
+						collapsed: true
+					},
+					{
+						xtype: 'globalscenariotools',
+						collapsed: true
 					}]
 				},
 				{
@@ -344,8 +446,13 @@ Ext.define('MyApp.view.MainViewport', {
 					},
 					collapseDirection: 'right',
 					collapsible: true,
+					collapsed: true,
 					items: [{
 						xtype: 'evaluationtools'
+					},
+					{
+						xtype: 'reporttools',
+						collapsed: true
 					}]
 				}]
 			}]
