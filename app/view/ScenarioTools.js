@@ -25,10 +25,13 @@ Ext.define('MyApp.view.ScenarioTools', {
 
     height: 200,
     width: 300,
-    title: 'Create Scenario',
+    title: 'Create / Manage Scenario',
 	icon: 'app/images/scenario_icon.png',
-     cls: 'my-header',
-   
+	cls: 'my-header',
+	viewConfig: {
+		stripeRows: true
+	},
+
     tools:[{
 		type: 'help',
 		qtip: 'Scenario Help',

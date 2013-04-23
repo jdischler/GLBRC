@@ -31,6 +31,7 @@ Ext.define('MyApp.view.GlobalScenarioTools', {
             items: [{
 				xtype: 'panel',
 				title: 'Economic',
+				icon: 'app/images/economic_icon.png',
 				items: [{
 					xtype: 'economicassumptions',
 				}],
@@ -61,6 +62,7 @@ Ext.define('MyApp.view.GlobalScenarioTools', {
 				xtype: 'panel',
 				bodyPadding: 10,
 				title: 'Climate',
+				icon: 'app/images/climate_icon.png',
 				dockedItems: [{
 					xtype: 'toolbar',
 					dock: 'bottom',
@@ -88,6 +90,7 @@ Ext.define('MyApp.view.GlobalScenarioTools', {
 				xtype: 'panel',
 				bodyPadding: 10,
 				title: 'Policies',
+				icon: 'app/images/policy_icon.png',
 				dockedItems: [{
 					xtype: 'toolbar',
 					dock: 'bottom',

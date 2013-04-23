@@ -14,7 +14,7 @@ Ext.define('MyApp.view.TransformationTools', {
     
 	tools:[{
 		type: 'help',
-		qtip: 'Global Scenario Help',
+		qtip: 'Transformation Help',
 		handler: function(event, target, owner, tool) {
 			var help = Ext.create('MyApp.view.LayerHelpWindow').show();
 		}
@@ -51,11 +51,13 @@ Ext.define('MyApp.view.TransformationTools', {
 					dock: 'bottom',
 					items: [{
 						xtype: 'button',
+						icon: 'app/images/apply_icon.png',
 						scale: 'medium',
 						text: 'Apply'
 					},
 					{
 						xtype: 'button',
+						icon: 'app/images/revert_icon.png',
 						scale: 'medium',
 						text: 'Revert'
 					},

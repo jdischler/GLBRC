@@ -51,6 +51,11 @@ Ext.define('MyApp.view.MainViewport', {
 			473145.000100002, 2201985.0001,
 			587505.000100002, 2297115.0001
 		);
+/*		bounds = new OpenLayers.Bounds(
+			557015.3576368737, 703428.1584157696,
+			632284.8057406195, 763708.4957687574
+		);
+*/
 		var options = {
 			controls: [],
 			maxExtent: bounds,
@@ -195,11 +200,9 @@ Ext.define('MyApp.view.MainViewport', {
 			},
 			{ 
 				displayOutsideMapExtent: false,
-				opacity: 1,
 				isBaseLayer: false,
 				opacity: 0.5,
 				transitionEffect: resizeMethod,
-				buffer: bufferSize,
 				visibility: false
 			});
 		
@@ -216,11 +219,9 @@ Ext.define('MyApp.view.MainViewport', {
 			},
 			{ 
 				displayOutsideMapExtent: false,
-				opacity: 1,
 				isBaseLayer: false,
 				opacity: 0.3,
 				transitionEffect: resizeMethod,
-				buffer: bufferSize,
 				visibility: false
 			});
 		
@@ -240,7 +241,6 @@ Ext.define('MyApp.view.MainViewport', {
 				opacity: 0.3,
 				isBaseLayer: false,
 				transitionEffect: resizeMethod,
-				buffer: bufferSize,
 				visibility: false
 			});
 		
@@ -261,7 +261,6 @@ Ext.define('MyApp.view.MainViewport', {
 				isBaseLayer: false,
 				opacity: 0.5,
 				transitionEffect: resizeMethod,
-				buffer: bufferSize,
 				visibility: false,
 				yx : {
 					projectionType : true
@@ -282,9 +281,10 @@ Ext.define('MyApp.view.MainViewport', {
 			{
 				buffer: bufferSize,
 				displayOutsideMaxExtent: false,
-				isBaseLayer: true,
-				transitionEffect: 'resize',
-				buffer: bufferSize,
+				isBaseLayer: false,
+				transitionEffect: resizeMethod,
+				opacity: 0.5,
+				visibility: false,
 				yx : {
 					projectionType : true
 				}
@@ -304,15 +304,39 @@ Ext.define('MyApp.view.MainViewport', {
 			{
 				buffer: bufferSize,
 				displayOutsideMaxExtent: false,
+				opacity: 1,
 				isBaseLayer: true,
-				transitionEffect: 'resize',
+				transitionEffect: resizeMethod,
+				yx : {
+					projectionType : true
+				}
+			});
+
+		var wmsAerial = new OpenLayers.Layer.WMS("Aerial",
+			["http://" + baseUrl + ":" + port + "/geoserver/DSS-Raster/wms",
+			"http://" + baseUrl1 + ":" + port + "/geoserver/DSS-Raster/wms",
+			"http://" + baseUrl2 + ":" + port + "/geoserver/DSS-Raster/wms",
+			"http://" + baseUrl3 + ":" + port + "/geoserver/DSS-Raster/wms"],
+			{
+				LAYERS: 'DSS-Raster:Aerial_Photo',
+				format: imgFormat,
+//				tiled: true,
+				tilesOrigin : map.maxExtent.left + ',' + map.maxExtent.bottom
+			},
+			{
 				buffer: bufferSize,
+				displayOutsideMaxExtent: false,
+				transitionEffect: 'resize',
+				isBaseLayer: true,
 				yx : {
 					projectionType : true
 				}
 			});
 		
 		//----------------
+/*		layerBrowser.addLayer(wmsAerial, 'Aerial','app/images/raster.png',
+				'Activate a raster overlay of land usage');
+*/
 		layerBrowser.addLayer(wmsCDL, 'Land Coverage','app/images/raster.png',
 				'Activate a raster overlay of land usage');
 		layerBrowser.addLayer(wmsDEM, 'Geophysical','app/images/raster.png',
@@ -330,7 +354,7 @@ Ext.define('MyApp.view.MainViewport', {
 		layerBrowser.addLayer(wmsDane, 'Geophysical','app/images/vector.png',
 				'Activate a vector overlay of Dane County');
 	
-		map.addLayers([wmsCDL,wmsDEM,wmsSlope,wmsDane,wmsWatersheds,wmsRivers,wmsRoads,wmsLand]);
+		map.addLayers([/*wmsAerial,*/wmsCDL,wmsDEM,wmsSlope,wmsDane,wmsWatersheds,wmsRivers,wmsRoads,wmsLand]);
 	},
 	
 	//--------------------------------------------------------------------------
